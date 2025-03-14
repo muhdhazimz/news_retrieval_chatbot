@@ -51,10 +51,14 @@ tools = [
     Tool(
         name="web_search_assistant",
         func=search.run,
-        description="Ideal for retrieving information from the web to supplement or enhance query responses. Use this tool to search for external data, validate assumptions, or find additional context relevant to the user's request.",
+        description="If no relevant database table is found, use this tool to retrieve information externally from the web. It is the fallback option when structured data is unavailable.",
     ),
     get_available_fields_tool,
-    search_table_for_query_tool,
+    Tool(
+        name="search_table_for_query",
+        func=search_table_for_query_tool,
+        description="Use this tool first to determine the most relevant database table for the user's query. This ensures that data retrieval is structured and precise."
+    ),
     sql_query_generator_and_executor_tool,
 ]
 
@@ -79,7 +83,8 @@ agent_executor = AgentExecutor(
     agent=agent,
     tools=tools,
     verbose=True,
-    return_intermediate_steps=False,
+    return_intermediate_steps=True,
+    handle_parsing_errors=True,
 )
 
 

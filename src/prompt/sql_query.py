@@ -125,7 +125,12 @@ Pro Tips
     "Please ensure that any date-related columns in the table, which are not already in a date format, are converted to a date format in every part of the query.\n\n"
     "Example of a correct SQL query date conversion from text to date:\n"
     "SELECT * FROM {table_name} WHERE DATE(datetime_column) BETWEEN DATE('2023-01-01') AND DATE('2023-12-31');\n\n"
+    "Example of a correct SQL query date with filtering:\n"
+    "1. SELECT News FROM {table_name} WHERE Category = 'Forex' LIMIT 20;\n\n"
+    "2. SELECT News FROM {table_name} WHERE Category = 'Corporate News' LIMIT 20;\n\n"
+    "SELECT News FROM {table_name} WHERE Category IN ('Corporate News', 'Banking') LIMIT 20;\n\n"
     "The user asked: {input}\n\n"
     "The user's client ID: {client_id}\n\n"
     "Write a valid and runnable SQL query to answer the user's question. Return only the SQL query."
+    "Note: If the user query mentions a category, ensure that the category matches exactly with the value in the database (e.g., 'Corporate News' vs. 'Category News' or 'news about forex' vs. 'Forex' or 'market news' vs. 'Markets'). If the match is case-sensitive, ensure that you apply an exact match, or inform the user of any differences.\n"
 )

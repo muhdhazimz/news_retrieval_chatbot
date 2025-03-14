@@ -294,6 +294,7 @@ def search_table_for_query_tool(input: str) -> Union[str, None]:
     table_descriptions = {}
     for table in available_tables:
         description = generate_table_descriptions(table)
+        print(f"Table Description: {description}\n\n")
         table_descriptions[table] = description
 
     # Prepare input for LLM analysis
@@ -309,7 +310,7 @@ def search_table_for_query_tool(input: str) -> Union[str, None]:
 
     query_prompt += (
         "\n\nIdentify the single most relevant table based on the query context and the descriptions provided. "
-        "Return only the relevant table name or 'None' if no table matches the query context."
+        "Return only the relevant table name or 'None' if no table matches the query context. If only one table exists and it matches the context, return its name."
     )
 
     # Use Cohere's language model to determine the relevance
@@ -321,6 +322,9 @@ def search_table_for_query_tool(input: str) -> Union[str, None]:
             temperature=0.3,
         )
         result = response.generations[0].text.strip()
+
+        if len(available_tables) == 1:
+            return available_tables[0]
 
         # If the result explicitly says 'None', return None
         if result.lower() == "none":
@@ -359,6 +363,8 @@ def generate_sql_query_with_cohere(input: str, table_name: str, client_id: str) 
 
     # Get the column descriptions from the SQLite database
     column_descriptions = generate_column_descriptions(conn, table_name)
+
+    print(f"Column Description: {column_descriptions}\n\n")
 
     response = cohere_client.generate(
         model=COHERE_MODEL,
